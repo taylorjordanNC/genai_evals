@@ -1,0 +1,31 @@
+= Credentials and Useful URLs
+
+
+== SSH (optional)
+
+[Attributes]
+|===
+|SSH Vars | Values
+
+| `ssh_username`
+| {ssh_username}
+
+| `ssh_password`
+|  {ssh_password}
+
+| `ssh_command` 
+| {ssh_command}
+
+|===
+
+
+[Attributes]
+|===
+
+| **Full Browser Tab Options**
+| link:https://{targethost}:9443[Jupyter Lab^]
+| link:https://{targethost}:8443[Studio Code^]
+| link:https://{targethost}/tty-top[Terminal Session (Top)^]
+| link:https://{targethost}/tty-bottom[Terminal Session (Bottom)^]
+
+|===
