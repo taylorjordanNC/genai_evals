@@ -1,4 +1,6 @@
 * xref:index.adoc[Introduction to the Lab]
 * xref:01-guidellm.adoc[1. Evaluating System Performance]
 * xref:02-lm-eval-harness.adoc[2. Evaluating Model Accuracy]
+* xref:03-promptfoo.adoc[3. Red Teaming and Custom Safety Evaluations with PromptFoo]
+* xref:04-conclusion.adoc[4. Conclusion: From Evaluation to Impact]
 * xref:resources.adoc[Resources and References]
