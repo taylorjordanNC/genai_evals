@@ -1,18 +1,86 @@
 = {lab_name}
 
 ## Model Evaluation Workshop
-Accuracy scores and leaderboard metrics look impressive—but production-grade AI requires evals that reflect real-world performance, reliability, and user happiness. Traditional benchmarks rarely help you understand how your LLM will perform when embedded in complex workflows or agentic systems. How can you realistically and adequately measure reasoning quality, agent consistency, MCP integration, and user-focused outcomes?
+Accuracy scores and leaderboard metrics often look impressive—but production-grade AI demands more. True success comes from evaluating models in real-world scenarios, where performance, reliability, and user satisfaction are non-negotiable.
 
-In this practical, example-driven workshop, we'll go beyond standard benchmarks and dive into tangible evaluation strategies using various open-source frameworks like GuideLLM and lm-eval-harness. You'll see concrete examples of how to create custom eval suites tailored to your use case, integrate human-in-the-loop feedback effectively, and implement agent reliability checks that reflect production conditions. Walk away with actionable insights and best practices for evaluating and improving your LLMs, ensuring they meet real-world expectations—not just leaderboard positions!
+Traditional benchmarks don’t tell you:
 
-## Preparing Your System
-Follow the below instructions to ready your system for our lab activities.
+* How your LLM handles multi-step reasoning
 
-### Install NVIDIA Container Toolkit
+* Whether your agent stays consistent in workflow contexts
 
-```bash
+* If your MCP pipeline breaks silently
+
+* Or what users will actually experience in production
+
+## In This Workshop
+In this hands-on, example-driven lab, you’ll move beyond leaderboard metrics to explore:
+
+* System-level benchmarking with GuideLLM
+* Task-level accuracy evaluation with lm-eval-harness
+* Red teaming and safety analysis with Promptfoo
+* Use-case-aligned scoring for RAG, agentic flows, and user interactions
+
+By the end, you’ll know how to:
+
+- Choose the right evaluation framework for your use case
+
+- Customize your own evaluation suite
+
+- Interpret results meaningfully across metrics like accuracy, throughput, safety, and reasoning
+
+- Align LLM behavior with production SLAs and expectations
+
+## Your Lab Environment Overview
+[cols="1,2"]
+|===
+|Component |Details
+
+|Virtual Environment
+|`~/venv`, Python 3.12
+
+|Operating System
+|Red Hat Enterprise Linux (RHEL) 9.5, with NVIDIA drivers and CUDA toolkit installed. (CUDA is a parallel computing platform and programming model developed by NVIDIA for general computing on its own GPUs.)
+
+|GPU
+|NVIDIA L4 (24GB VRAM)
+
+|LLM Runtime (Development)
+|Ollama (which uses `lamacpp` internally). You'll also deploy vLLM as a high-performance alternative.
+|===
+
+[TIP]
+====
+You can monitor your GPU's utilization at any time by typing the `nvtop` command in a terminal. 
+
+Your lab interface provides two terminals in the "Terminal Tab," but you can open additional terminals as needed directly within the JupyterLab interface.
+
+====
+
+
+## System Preparation
+
+### Terminal Setup
+
+All lab activities will use the **Terminals** tab. You're already connected to your RHEL system through two tmux-enabled terminal panes. These sessions share the same environment.
+
+### Step 1: Install NVIDIA Container Toolkit
+
+[source,console,role=execute,subs=attributes+]
+----
 curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
 sudo dnf config-manager --enable nvidia-container-toolkit-experimental
 sudo dnf install -y nvidia-container-toolkit podman
 sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
-```
+----
+
+### Step 2: Install Node and Promptfoo CLI
+
+[source,console,role=execute,subs=attributes+]
+----
+curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+sudo dnf install -y nodejs
+npx promptfoo@latest
+----
+
+This installs Node.js 20 and Promptfoo, which you’ll use later to run red-teaming and behavior evals locally.

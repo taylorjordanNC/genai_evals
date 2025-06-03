@@ -1,0 +1,54 @@
+:experimental: true
+:imagesdir: ../assets/images
+:toc: false
+:numbered: true
+
+# Conclusion: From Evaluation to Impact
+
+## Why Evaluation Matters in Production
+
+Model evaluation isn’t just a checkbox—it’s the foundation for building robust, responsible, and scalable GenAI systems.
+
+Throughout this workshop, you explored three layers of practical LLM evaluation:
+
+[cols="1,1,2", options="header"]
+|===
+| Layer
+| Tool
+| Purpose
+
+| **System Performance**
+| GuideLLM
+| Ensure latency, throughput, and scaling align with SLA and infrastructure costs
+
+| **Task Accuracy**
+| lm-eval-harness
+| Quantify reasoning quality, factuality, and domain performance
+
+| **Behavior & Safety**
+| Promptfoo + HarmBench
+| Validate model trustworthiness in sensitive, real-world scenarios
+|===
+
+
+These evaluations aren’t theoretical—they directly support:
+
+* **Model selection**: Does it meet your task and performance goals?
+
+* **Deployment readiness**: Can it serve real users under load?
+
+* **Risk mitigation**: Will it behave reliably in edge cases?
+
+## Bringing This to Your Workflow
+
+Ask yourself these questions as you move forward with production LLM systems:
+
+- Have you validated latency and throughput under realistic input/output patterns?
+
+- Do you have domain-relevant benchmarks to assess model fit?
+
+- Is there a safety testing loop in place for model updates?
+
+- Can you track regression and improvement over time as you iterate?
+
+Whether you’re fine-tuning a foundation model, deploying a RAG pipeline, or designing agentic workflows - evaluation is your grounding signal.

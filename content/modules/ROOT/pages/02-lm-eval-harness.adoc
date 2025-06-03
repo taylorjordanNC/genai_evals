@@ -3,13 +3,13 @@
 :toc: false
 :numbered: true
 
-# Activity 2: Evaluating Model Accuracy with lm-eval-harness
+# Activity 2: Evaluating Model Accuracy with lm-eval-harness + MMLU-Pro
 
-While performance metrics like latency and throughput are critical for deploying efficient GenAI systems, accuracy and task-level evaluation are equally essential when selecting or fine-tuning a model. In this activity, we use the popular lm-eval-harness framework to systematically measure how well a language model performs across a variety of established NLP tasks.
+While performance metrics like latency and throughput are critical for deploying efficient GenAI systems, **task-level accuracy and reasoning quality** are equally essential for selecting or fine-tuning a model. In this activity, we use the popular lm-eval-harness framework to evaluate how well a language model performs across established benchmarks, focusing on reasoning and subject matter understanding.
 
 ## What is lm-eval-harness?
 
-lm-eval-harness is a community-maintained benchmarking framework developed by **EleutherAI**. It enables consistent, reproducible evaluation of large language models (LLMs) across dozens of academic and real-world benchmarks, such as:
+**lm-eval-harness** is a community-maintained benchmarking toolkit from **EleutherAI**. It enables consistent, reproducible evaluation of large language models (LLMs) across dozens of academic and real-world benchmarks, such as:
 
 * MMLU (Massive Multitask Language Understanding)
 
@@ -23,7 +23,7 @@ The framework supports both open-source models and OpenAI-compatible endpoints, 
 
 Today we will be running the mmlu_pro evaluation. 
 
-**MMLU-Pro** is a reasoning-focused, multiple-choice benchmark derived from the original MMLU dataset. It contains 10-answer multiple-choice questions across a range of subjects designed to challenge a model’s ability to perform complex reasoning and factual recall — key skills for enterprise-grade AI applications.
+**MMLU-Pro** is a reasoning-focused, multiple-choice benchmark derived from the original MMLU dataset. MMLU-Pro extends the original MMLU benchmark by introducing 10-option multiple-choice questions across diverse academic disciplines. It’s designed to test a model’s **reasoning, factual recall, and elimination skills**—key for enterprise AI.
 
 ## Today's Activity
 
@@ -37,9 +37,9 @@ In this hands-on example, you’ll:
 
 . Explore how our model performs across standardized tasks
 
-### Getting Started
+### Setup
 
-Activate the same python virtual environment we used in the last activity, located in `/home/dev` and install our llm-eval-test package.
+Activate the same python virtual environment we used in the last activity, located in `/home/dev` and install the **llm-eval-test** package.
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -47,16 +47,16 @@ source venv/bin/activate
 pip install git+https://github.com/sjmonson/llm-eval-test.git
 ----
 
-### View the CLI options
+#### Check available CLI options
+
 [source,console,role=execute,subs=attributes+]
 ----
 llm-eval-test run --help
 ----
 
-
 View our https://github.com/openshift-psap/llm-eval-test[repository] here.
 
-### Prepare directory for dataset
+### Prepare Dataset Directory
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -65,14 +65,16 @@ mkdir $DATASETS_DIR
 DATASET=TIGER-Lab/MMLU-Pro
 ----
 
-### Download dataset for testing
+### Download Dataset
 
 [source,console,role=execute,subs=attributes+]
 ----
 llm-eval-test download --datasets $DATASETS_DIR --tasks mmlu_pro
 ----
 
-### Set Variables
+### Define Your Model + Endpoint
+
+We will use the Granite model still being served by vLLM. If this model is no longer deployed, please return to activity 1 to re-deploy the container.
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -88,9 +90,15 @@ TOKENIZER=ibm-granite/granite-3.3-2b-instruct
 llm-eval-test run --endpoint $ENDPOINT --model $MODEL_NAME --datasets $DATASETS_DIR --tasks mmlu_pro
 ----
 
-This will take about 10 minutes or so to process. 
+This may take ~10 minutes.
 
-## Evaluating Results
+### While You Wait: What is lm-eval-harness?
+
+* Check out this https://github.com/EleutherAI/lm-evaluation-harness/blob/main/examples/lm-eval-overview.ipynb[overview notebook] to explore extensibility and task definitions.
+
+* View real Red Hat https://huggingface.co/collections/RedHatAI/red-hat-ai-validated-models-v10-682613dc19c4a596dbac9437[validated model results] to understand benchmark outcomes in production contexts and to see how your favorite models rank.
+
+## INterpreting MMLU-Pro Results
 
 **Accuracy**: The primary metric is multiple-choice accuracy, indicating how often the model selects the correct answer from 10 options.
 
@@ -106,6 +114,20 @@ This will take about 10 minutes or so to process.
 
 ## Summary
 
-This activity demonstrated how to evaluate model accuracy with standardized benchmarks, interpret results meaningfully, and align them with model selection or fine-tuning goals. It's a key part of building trustworthy GenAI systems that not only perform well, but reason effectively.
+This activity showed how to:
+
+* Use llm-eval-harness via an OpenAI-compatible wrapper (llm-eval-test)
+
+* Run benchmarks with MMLU-Pro
+
+* Interpret accuracy-based metrics to guide model selection
+
+Next steps might include:
+
+* Comparing two models (e.g., open vs. fine-tuned)
+
+* Adding custom tasks or subject domains
+
+* Visualizing per-subject scores for insight into model gaps
 
 

@@ -5,7 +5,7 @@
 
 # Activity 1: Evaluating System Performance with GuideLLM
 
-In Generative AI systems, evaluating system performance including latency, throughput, and resource utilization is just as important as evaluating model accuracy or quality. Here's why:
+In Generative AI systems, evaluating system performance - including latency, throughput, and resource utilization - is just as important as evaluating model accuracy or quality. Here's why:
 
 . **User Experience**: High latency leads to sluggish interactions, which is unacceptable in chatbots, copilots, and real-time applications. Users expect sub-second responses.
 
@@ -17,19 +17,17 @@ In Generative AI systems, evaluating system performance including latency, throu
 
 . **Deployment Readiness**: Latency and throughput impact architectural decisions (e.g., batching, caching, distributed serving). Measuring them ensures a model is viable under real-world constraints.
 
-## Deploy Gen AI Model with vLLM
+## Deploy GenAI Model with vLLM
 
 Inference runtimes are the engines that turn a trained model into usable outputs. They handle the actual generation process during real-time use, so their efficiency directly affects latency, throughput, and resource usage. A poor runtime can bottleneck even the best model.
 
 vLLM is an open-source, high-performance inference engine optimized for large language models. It uses advanced techniques like PagedAttention and continuous batching to significantly improve throughput and reduce latency—especially for workloads with many concurrent users. It's designed to maximize GPU utilization and support production-scale deployment.
 
-### Setup Terminals
-
-You will need two active terminal sessions for this and subsequent activities. SSH into two terminal windows using your preferred terminal application.
-
 ### Export HuggingFace token 
 
-Export HF token into the active session.
+Export your personal HuggingFace token into the active session.
+
+NOTE: If you do not have a HF token, or do not know where to get one, head to https://huggingface.co/settings/tokens and create a new token. Keep it in a safe place, and don’t commit it to any git repositories.
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -43,11 +41,9 @@ export HUGGING_FACE_HUB_TOKEN=<your actual huggingface token>
 sudo podman run --rm -it --entrypoint /bin/sh -e HF_HOME=/tmp/model-cache -e HUGGING_FACE_HUB_TOKEN -e HF_HUB_OFFLINE=0 -v vllm-models:/tmp/model-cache --device nvidia.com/gpu=all -p 8000:8000/tcp quay.io/vllm/vllm:0.8.3.0rc0 -c 'vllm serve ibm-granite/granite-3.3-2b-instruct'
 ----
 
-You may try any other vLLM-supported models in addition to or in lieu of IBM's Granite model like `Qwen/Qwen2.5-7B-Instruct` from Hugging Face.
-
 ## Install GuideLLM
 
-Activate preset python virtual environment located at `/home/dev` and then install GuideLLM using `pip`.
+Activate preset python virtual environment located at `/home/dev` and then install **GuideLLM**:
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -55,13 +51,14 @@ source venv/bin/activate
 pip install guidellm
 ----
 
-* Peruse the available GuideLLM https://github.com/neuralmagic/guidellm?tab=readme-ov-file#configurations[configuration options]. 
-* The GitHub ReadMe gives detailed information about configuration flags
-* `guidellm benchmark --help` to check flag options in CLI
+Explore GuideLLM configuration flags: 
+
+* https://github.com/neuralmagic/guidellm?tab=readme-ov-file#configurations
+* Use `guidellm benchmark --help` to list CLI options.
 
 ### Run Standard Performance Evaluation
 
-The below command is based on the default command from the README.md. The rate variable is shortened to 5 to reduce the processing time. You may also change the rate-type to run only one benchmark at a time. Sweep will show us the default standard set of benchmarks.
+Run a sweep test with GuideLLM using a reduced rate to keep runtime reasonable. The sweep will do numerous standard benchmarks at once. You may also adjust the rate-type to run one benchmark at a time.
 
 [source,console,role=execute,subs=attributes+]
 ----
@@ -74,16 +71,14 @@ guidellm benchmark \
   --data "prompt_tokens=256,output_tokens=128"
 ----
 
-You may consider, for different use cases, you will set different standardized dataset profiles that can be passed in as arguments in GuideLLM. For example the following variables represent input and output tokens, respectively, based on the given use case: 
+You can also define different token profiles per use case to simulate real-world traffic. 
+
+For example, the following variables represent input and output tokens, respectively, based on the given use case: 
 
 * **Chat (512/256)**
 * **RAG (4096/512)**
 * **Summarization (1024/256)**
 * **Code Generation (512/512)**
-
-Using these profiles, we can map specific i/o token scenarios to real-world use cases to make these runs more explainable to how this impacts applications.
-
-Adjust the given GuideLLM command to your liking. This will take a few minutes to process.
 
 
 ### Evaluate Output and Adjust GuideLLM Settings
@@ -106,9 +101,9 @@ GuideLLM captures the following metrics during a full sweep:
 
 . **Time per output token (mean, median, p99)**
 
-See the complete https://github.com/neuralmagic/guidellm/blob/main/docs/metrics.md[metrics documentation]. 
+See the complete https://github.com/neuralmagic/guidellm/blob/main/docs/metrics.md[metrics documentation] for interpretation details. 
 
-### Reading Output
+### Understanding Output Sections
 
 #### Top Section (Benchmark Info)
 
@@ -126,25 +121,22 @@ See the complete https://github.com/neuralmagic/guidellm/blob/main/docs/metrics.
 - Good for general performance overview
 
 * Median
-- Typical experience
+- Represents typical experience
 - More stable, less skewed by outliers
 
 * P99
 - Worst-case real latency
 - Essential for SLOs and user experience under load
 
-### Adjusting GuideLLM Settings
+### Experiment with Different Scenarios
 
-Depending on the results, try running GuideLLM a couple of different ways to see how the different controlled tests impact results.
+Try modifying input/output token configurations or test types to reflect:
 
-**Suggestions:**
+* prompt_tokens=4096, output_tokens=512 (RAG)
 
-* Change `--data "prompt_tokens=x, output_tokens=x"` where the 2 x's represents the below use case configurations, respectively:
+* prompt_tokens=1024,output_tokens=256 (Summarization)
 
-- **Chat (512/256)**
-- **RAG (4096/512)**
-- **Summarization (1024/256)**
-- **Code Generation (512/512)**
+* prompt_tokens=512,output_tokens=512 (Code Generation)
 
 ## Summary
 
